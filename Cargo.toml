@@ -1,0 +1,18 @@
+[workspace.package]
+name = "IT-service-desk"
+version = "0.1.0"
+edition = "2024"
+description = "IT service deck"
+
+[workspace]
+members = ["core", "app", "service", "respository"]
+default-members = ["app"]
+resolver = "3"
+
+
+[workspace.dependencies]
+dotenvy = "0.15.7"
+serde_json = "1.0.149"
+tokio = { version = "1.49.0", features = ["full"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"

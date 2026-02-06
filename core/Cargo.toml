@@ -1,0 +1,16 @@
+[package]
+name = "core"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+
+[dependencies]
+aws-config = "1.8.13"
+aws-sdk-emr = "1.102.0"
+aws-sdk-secretsmanager = "1.99.0"
+aws-sdk-ssm = "1.103.0"
+dotenvy = { workspace = true }
+lettre = { version = "0.11.19", features = ["tokio1", "smtp-transport", "builder"] }
+serde = "1.0.228"
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }

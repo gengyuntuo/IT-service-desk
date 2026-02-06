@@ -1,0 +1,18 @@
+[package]
+name = "web-app"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+
+[dependencies]
+axum = { version = "0.8.8" }
+dotenvy = { workspace = true }
+jsonwebtoken = "10.3.0"
+serde_json = { workspace = true }
+service = { version = "0.1.0", path = "../service" }
+tokio = { workspace = true, features = ["full"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+utoipa = { version = "5.4.0", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
+serde = { version = "1.0.228", features = ["derive"] }
