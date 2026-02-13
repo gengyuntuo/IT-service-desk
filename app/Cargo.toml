@@ -5,6 +5,7 @@ edition.workspace = true
 description.workspace = true
 
 [dependencies]
+anyhow = { workspace = true }
 axum = { version = "0.8.8" }
 dotenvy = { workspace = true }
 jsonwebtoken = "10.3.0"

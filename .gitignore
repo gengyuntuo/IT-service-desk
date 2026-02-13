@@ -1,6 +1,7 @@
 .idea/
 .vscode/
 target/
+.sqlx/
 
 *.iml
 *.log

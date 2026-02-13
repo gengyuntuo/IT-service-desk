@@ -45,6 +45,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.101"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f0e0fee31ef5ed1ba1316088939cea399010ed7731dba877ed44aeb407a75ea"
+
+[[package]]
 name = "ar_archive_writer"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -675,7 +681,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fac4744fb15ae8337dc853fee7fb3f4e48c0fbaa23d0afe49c447b4fab126118"
 dependencies = [
  "iana-time-zone",
+ "js-sys",
  "num-traits",
+ "serde",
+ "wasm-bindgen",
  "windows-link",
 ]
 
@@ -717,6 +726,7 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 name = "core"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "aws-config",
  "aws-sdk-emr",
  "aws-sdk-secretsmanager",
@@ -724,6 +734,7 @@ dependencies = [
  "dotenvy",
  "lettre",
  "serde",
+ "tokio",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1634,6 +1645,7 @@ dependencies = [
  "quoted_printable",
  "socket2 0.6.2",
  "tokio",
+ "tokio-native-tls",
  "url",
 ]
 
@@ -2168,7 +2180,10 @@ checksum = "a96887878f22d7bad8a3b6dc5b7440e0ada9a245242924394987b21cf2210a4c"
 name = "respository"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "chrono",
  "dotenvy",
+ "serde",
  "sqlx",
  "tokio",
  "tracing",
@@ -2843,7 +2858,6 @@ dependencies = [
  "cfg-if",
  "libc",
  "psm",
- "windows-sys 0.52.0",
  "windows-sys 0.59.0",
 ]
 
@@ -3016,6 +3030,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tokio-native-tls"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbae76ab933c85776efabc971569dd6119c580d8f5d448769dec1764bf796ef2"
+dependencies = [
+ "native-tls",
+ "tokio",
 ]
 
 [[package]]
@@ -3388,6 +3412,7 @@ dependencies = [
 name = "web-app"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
  "dotenvy",
  "jsonwebtoken",
