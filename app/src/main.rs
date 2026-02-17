@@ -1,36 +1,19 @@
+use axum::Router;
 use axum::routing::get;
-use axum::{Json, Router};
 use tracing::{Level, info};
-use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 mod dto;
 mod middleware;
 mod routes;
 
-#[derive(OpenApi)]
-#[openapi(paths(openapi))]
-struct ApiDoc;
-
-/// Return JSON version of an OpenAPI schema
-#[utoipa::path(
-    get,
-    path = "/api-docs/openapi.json",
-    responses(
-        (status = 200, description = "JSON file", body = ())
-    )
-)]
-async fn openapi() -> Json<utoipa::openapi::OpenApi> {
-    Json(ApiDoc::openapi())
-}
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().with_max_level(Level::INFO).init();
 
-    let swagger_ui = SwaggerUi::new("/swagger").url("/api-docs/openapi.json", ApiDoc::openapi());
+    let swagger_ui = SwaggerUi::new("/swagger");
     let app = Router::new()
-        .route("/", get(|| async { "Hello!" }))
+        .route("/health-check", get(|| async { "OK" }))
         .merge(swagger_ui)
         .into_make_service();
 

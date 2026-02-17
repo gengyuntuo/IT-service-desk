@@ -1,6 +1,6 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-use chrono::{DateTime, Utc};
 
 /// 工单状态枚举
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type)]
@@ -55,41 +55,39 @@ impl std::fmt::Display for TicketPriority {
 /// 工单实体结构体
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Ticket {
-    pub id: i32,
-    pub title: String,
-    pub description: String,
-    pub status: TicketStatus,
-    pub priority: TicketPriority,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub user_id: i32,
-}
+    /// 唯一标识 ID
+    pub id: i64,
 
-/// 创建工单请求结构体
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateTicketRequest {
+    /// 工单标题
     pub title: String,
-    pub description: String,
-    pub status: TicketStatus,
-    pub priority: TicketPriority,
-    pub user_id: i32,
-}
 
-/// 更新工单请求结构体
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UpdateTicketRequest {
-    pub title: Option<String>,
+    /// 详细描述
     pub description: Option<String>,
-    pub status: Option<TicketStatus>,
-    pub priority: Option<TicketPriority>,
-}
 
-/// 工单查询参数结构体
-#[derive(Debug, Clone, Default)]
-pub struct TicketQueryParams {
-    pub status: Option<TicketStatus>,
-    pub priority: Option<TicketPriority>,
-    pub user_id: Option<i32>,
-    pub limit: Option<u32>,
-    pub offset: Option<u32>,
+    /// 附件地址或 JSON 字符串
+    pub attachments: Option<String>,
+
+    /// 类别：如 "Hardware", "Software", "Network"
+    pub category: String,
+
+    /// 状态：Pending, Approved, Rejected, Closed
+    pub status: TicketStatus,
+
+    /// 优先级：Low, Medium, High, Critical
+    pub priority: TicketPriority,
+
+    /// 申请人用户 ID
+    pub apply_user_id: i64,
+
+    /// 当前审批人/处理人 ID
+    pub approve_user_id: i64,
+
+    /// 创建时间
+    pub created_at: Option<DateTime<Utc>>,
+
+    /// 最后更新时间
+    pub updated_at: Option<DateTime<Utc>>,
+
+    /// 流程结束时间
+    pub finished_at: Option<DateTime<Utc>>,
 }

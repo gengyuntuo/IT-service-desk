@@ -23,31 +23,27 @@ COMMENT ON TABLE it_service.itsd_users IS 'Users';
 -- 工单表
 CREATE TABLE IF NOT EXISTS it_service.itsd_tickets
 (
-    id          Serial4 PRIMARY KEY,
-    title       text NOT NULL,
-    description text NOT NULL,
-    status      text NOT NULL,
-    priority    text NOT NULL,
-    created_at  timestamp DEFAULT now(),
-    updated_at  timestamp DEFAULT now(),
-    user_id     int  NOT NULL
+    id              SERIAL8 PRIMARY KEY,
+    title           TEXT NOT NULL,
+    description     TEXT,
+    attachments     TEXT,
+    category        TEXT NOT NULL,
+    status          TEXT NOT NULL,
+    priority        TEXT NOT NULL,
+    apply_user_id   INT8 NOT NULL,
+    approve_user_id INT8 NOT NULL,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    finished_at     TIMESTAMP WITH TIME ZONE
 );
 
-CREATE INDEX IF NOT EXISTS itsd_tickets_user_id_index ON it_service.itsd_tickets (user_id);
+-- 状态：Draft(草稿), Pending(审批中), Approved(通过), Rejected(驳回), Canceled(撤回)。
+
 CREATE INDEX IF NOT EXISTS itsd_tickets_id_index ON it_service.itsd_tickets (id);
 CREATE INDEX IF NOT EXISTS itsd_tickets_status_index ON it_service.itsd_tickets (status);
 CREATE INDEX IF NOT EXISTS itsd_tickets_priority_index ON it_service.itsd_tickets (priority);
 
-COMMENT ON COLUMN it_service.itsd_tickets.id IS 'Ticket ID';
-COMMENT ON COLUMN it_service.itsd_tickets.title IS 'Ticket Title';
-COMMENT ON COLUMN it_service.itsd_tickets.description IS 'Ticket Description';
-COMMENT ON COLUMN it_service.itsd_tickets.status IS 'Ticket Status';
-COMMENT ON COLUMN it_service.itsd_tickets.priority IS 'Ticket Priority';
-COMMENT ON COLUMN it_service.itsd_tickets.created_at IS 'Ticket Created At';
-COMMENT ON COLUMN it_service.itsd_tickets.updated_at IS 'Ticket Updated At';
-COMMENT ON COLUMN it_service.itsd_tickets.user_id IS 'User ID';
-COMMENT ON TABLE it_service.itsd_tickets IS 'Tickets';
-
+COMMENT ON TABLE it_service.itsd_tickets IS '申请工单表';
 
 -- 工单日志表
 CREATE TABLE IF NOT EXISTS it_service.itsd_ticket_logs
