@@ -67,6 +67,7 @@ const menuItems = [
   { path: '/ticket-apply', title: '工单申请', icon: '📝' },
   { path: '/ticket-approve', title: '工单审批', icon: '✅' },
   { path: '/aws-account', title: 'AWS账号管理', icon: '☁️' },
+  { path: '/resource-management', title: '资源管理', icon: '📦' },
   { path: '/users', title: '用户管理', icon: '👥' },
   { path: '/settings', title: '设置', icon: '⚙️' }
 ]

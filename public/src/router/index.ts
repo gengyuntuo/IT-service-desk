@@ -5,6 +5,7 @@ import DashboardView from '../views/DashboardView.vue'
 import TicketApplyView from '../views/TicketApplyView.vue'
 import TicketApproveView from '../views/TicketApproveView.vue'
 import AwsAccountView from '../views/AwsAccountView.vue'
+import ResourceManagementView from '../views/ResourceManagementView.vue'
 import UsersView from '../views/UsersView.vue'
 import SettingsView from '../views/SettingsView.vue'
 
@@ -79,6 +80,17 @@ const router = createRouter({
           path: '',
           name: 'aws-account',
           component: AwsAccountView
+        }
+      ]
+    },
+    {
+      path: '/resource-management',
+      component: MainLayout,
+      children: [
+        {
+          path: '',
+          name: 'resource-management',
+          component: ResourceManagementView
         }
       ]
     }
