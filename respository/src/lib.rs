@@ -1,3 +1,8 @@
+//! IT 服务台数据访问层
+//!
+//! 这个 crate 提供了对 PostgreSQL 数据库的数据访问对象(DAO)实现，
+//! 包括工单管理和用户管理功能。
+
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
