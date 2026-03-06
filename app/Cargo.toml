@@ -7,6 +7,7 @@ description.workspace = true
 [dependencies]
 anyhow = { workspace = true }
 axum = { version = "0.8.8" }
+chrono = { workspace = true }
 dotenvy = { workspace = true }
 jsonwebtoken = "10.3.0"
 respository = { version = "0.1.0", path = "../respository" }

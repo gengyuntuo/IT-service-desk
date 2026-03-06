@@ -1,4 +1,4 @@
 pub mod admin;
 pub mod mail_cmd;
 pub mod tickets;
-pub mod user;
+pub mod users;

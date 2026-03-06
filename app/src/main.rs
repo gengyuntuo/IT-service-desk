@@ -24,12 +24,13 @@ impl Modify for SecurityAddon {
     }
 }
 
-// 1. 收集所有 OpenAPI 文档
+// 收集所有 OpenAPI 文档
 // 在每个路由模块中定义局部的 OpenApi，然后在这里统一收集
 #[derive(OpenApi)]
 #[openapi(
     nest(
         (path="/api/v1", api=crate::routes::tickets::TicketsApiDoc),
+        (path="/api/v1", api=crate::routes::users::UsersApiDoc),
     ),
     modifiers(&SecurityAddon),
 )]
@@ -48,7 +49,8 @@ async fn main() {
         .route("/health-check", get(|| async { "OK" }))
         // 挂载 Swagger UI
         .merge(SwaggerUi::new("/swagger").url("/swagger/openapi.json", ApiDoc::openapi()))
-        .nest("/api/v1/tickets", crate::routes::tickets::routers())
+        .nest("/api/v1/tickets", routes::tickets::routers())
+        .nest("/api/v1/users", routes::users::routers())
         .with_state(AppState {
             db: create_pool().await.unwrap(),
         })
