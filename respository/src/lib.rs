@@ -4,13 +4,14 @@
 //! 包括工单管理和用户管理功能。
 
 use sqlx::postgres::PgPoolOptions;
+use sqlx::{Pool, Postgres};
 use std::env;
 
 pub mod dao;
 pub mod models;
 
 /// 创建数据库连接池
-pub async fn create_pool() -> Result<sqlx::PgPool, sqlx::Error> {
+pub async fn create_pool() -> Result<Pool<Postgres>, sqlx::Error> {
     dotenvy::dotenv().ok();
     let user = env::var("POSTGRES_USER").expect("POSTGRES_USER must be set");
     let password = env::var("POSTGRES_PASSWORD").expect("POSTGRES_PASSWORD must be set");
@@ -23,8 +24,9 @@ pub async fn create_pool() -> Result<sqlx::PgPool, sqlx::Error> {
         user, password, host, port, database
     );
 
-    PgPoolOptions::new()
+    let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(&jdbc_url)
-        .await
+        .await?;
+    Ok(pool)
 }
