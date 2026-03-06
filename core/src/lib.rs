@@ -1,4 +1,4 @@
-mod emr;
-mod mail;
-mod secret;
-mod ssm;
+pub mod emr;
+pub mod mail;
+pub mod secret;
+pub mod ssm;

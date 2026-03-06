@@ -2,6 +2,7 @@ use axum::routing::get;
 use axum::Router;
 use respository::create_pool;
 use sqlx::{Pool, Postgres};
+use std::sync::Arc;
 use tracing::{info, Level};
 use utoipa::openapi::security::{Http, HttpAuthScheme, SecurityScheme};
 use utoipa::{Modify, OpenApi};
@@ -39,12 +40,14 @@ struct ApiDoc;
 #[derive(Clone)]
 pub struct AppState {
     pub db: Pool<Postgres>,
+    pub ticket_service: Arc<service::tickets::TicketService>,
 }
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().with_max_level(Level::INFO).init();
 
+    let pool = create_pool().await.unwrap();
     let app = Router::new()
         .route("/health-check", get(|| async { "OK" }))
         // 挂载 Swagger UI
@@ -52,7 +55,8 @@ async fn main() {
         .nest("/api/v1/tickets", routes::tickets::routers())
         .nest("/api/v1/users", routes::users::routers())
         .with_state(AppState {
-            db: create_pool().await.unwrap(),
+            db: pool.clone(),
+            ticket_service: Arc::new(service::tickets::TicketService::new(pool.clone())),
         })
         .into_make_service();
 

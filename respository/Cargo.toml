@@ -6,10 +6,10 @@ description.workspace = true
 
 [dependencies]
 anyhow = { workspace = true }
+chrono = { workspace = true }
 dotenvy = { workspace = true }
+serde = { version = "1.0", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono"] }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-serde = { version = "1.0", features = ["derive"] }
-chrono = { version = "0.4", features = ["serde"] }

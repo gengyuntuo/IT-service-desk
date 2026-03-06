@@ -8,5 +8,6 @@ description.workspace = true
 core = { version = "0.1.0", path = "../core" }
 dotenvy = { workspace = true }
 respository = { version = "0.1.0", path = "../respository" }
+sqlx = { workspace = true, features = ["postgres"] }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }

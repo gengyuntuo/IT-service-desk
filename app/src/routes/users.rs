@@ -2,7 +2,7 @@ use crate::dto::common::{ApiResponse, PageResponse};
 use crate::dto::users::{CreateUserReq, UpdateUserReq, User};
 use crate::error::AppError;
 use crate::{dto, AppState};
-use axum::extract::{Json, Path};
+use axum::extract::{Json, Path, State};
 use axum::routing::{get, post};
 use axum::Router;
 use utoipa::OpenApi;
@@ -17,6 +17,7 @@ use utoipa::OpenApi;
     )
 )]
 pub async fn create_user(
+    State(app_state): State<AppState>,
     Json(payload): Json<CreateUserReq>,
 ) -> Result<ApiResponse<User>, AppError> {
     let user = User {
@@ -28,6 +29,7 @@ pub async fn create_user(
         created_at: None,
         updated_at: None,
     };
+    // app_state.ticket_service.create_user(user.clone()).await?;
     Ok(ApiResponse::<User>::ok(user))
 }
 
