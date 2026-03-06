@@ -10,6 +10,7 @@ axum = { version = "0.8.8" }
 dotenvy = { workspace = true }
 jsonwebtoken = "10.3.0"
 respository = { version = "0.1.0", path = "../respository" }
+serde = { workspace = true }
 serde_json = { workspace = true }
 service = { version = "0.1.0", path = "../service" }
 sqlx = { workspace = true, features = ["postgres"] }
@@ -18,4 +19,3 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 utoipa = { version = "5.4.0", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
-serde = { version = "1.0.228", features = ["derive"] }

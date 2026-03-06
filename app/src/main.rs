@@ -8,6 +8,7 @@ use utoipa::{Modify, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
 mod dto;
+mod error;
 mod middleware;
 mod routes;
 
@@ -47,6 +48,7 @@ async fn main() {
         .route("/health-check", get(|| async { "OK" }))
         // 挂载 Swagger UI
         .merge(SwaggerUi::new("/swagger").url("/swagger/openapi.json", ApiDoc::openapi()))
+        .nest("/api/v1/tickets", crate::routes::tickets::routers())
         .with_state(AppState {
             db: create_pool().await.unwrap(),
         })

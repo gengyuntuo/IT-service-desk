@@ -12,7 +12,7 @@ aws-sdk-secretsmanager = "1.99.0"
 aws-sdk-ssm = "1.103.0"
 dotenvy = { workspace = true }
 lettre = { version = "0.11.19", features = ["tokio1", "hostname", "builder", "smtp-transport", "pool", "tokio1-native-tls"] }
-serde = "1.0.228"
+serde = {workspace = true}
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
