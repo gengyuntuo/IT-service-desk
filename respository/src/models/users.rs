@@ -26,7 +26,7 @@ impl std::fmt::Display for UserRole {
 
 /// 用户实体结构体
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
-pub struct User {
+pub struct UserModel {
     /// 唯一标识 ID
     pub id: i32,
 
@@ -54,7 +54,7 @@ pub struct User {
 
 /// 创建用户请求结构体
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreateUserRequest {
+pub struct CreateUserParam {
     /// 用户名
     pub username: String,
 
@@ -70,7 +70,7 @@ pub struct CreateUserRequest {
 
 /// 更新用户请求结构体
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UpdateUserRequest {
+pub struct UpdateUserParam {
     /// 用户名（可选）
     pub username: Option<String>,
 

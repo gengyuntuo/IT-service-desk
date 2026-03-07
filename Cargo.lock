@@ -2508,9 +2508,13 @@ dependencies = [
 name = "service"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "chrono",
  "core",
  "dotenvy",
  "respository",
+ "serde",
+ "serde_json",
  "sqlx",
  "tracing",
  "tracing-subscriber",

@@ -1,4 +1,4 @@
-use crate::models::tickets::{Ticket, TicketPriority, TicketStatus};
+use crate::models::tickets::{CreateTicketParam, TicketModel, TicketPriority, TicketStatus, UpdateTicketParam};
 use sqlx::PgPool;
 use tracing::instrument;
 
@@ -15,9 +15,9 @@ impl TicketsDao {
 
     /// 创建新工单
     #[instrument(skip(self))]
-    pub async fn create_ticket(&self, ticket: Ticket) -> anyhow::Result<Ticket> {
+    pub async fn create_ticket(&self, param: CreateTicketParam) -> anyhow::Result<TicketModel> {
         let created_ticket = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             INSERT INTO it_service.itsd_tickets 
                 (title, description, extra_data, attachments, category, status, priority, apply_user_id, approve_user_id)
@@ -29,15 +29,15 @@ impl TicketsDao {
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
             "#,
-            ticket.title,
-            ticket.description,
-            ticket.extra_data,
-            ticket.attachments,
-            ticket.category,
-            ticket.status as TicketStatus,
-            ticket.priority as TicketPriority,
-            ticket.apply_user_id,
-            ticket.approve_user_id
+            param.title,
+            param.description,
+            param.extra_data,
+            param.attachments,
+            param.category,
+            param.status as TicketStatus,
+            param.priority as TicketPriority,
+            param.apply_user_id,
+            param.approve_user_id
         )
         .fetch_one(&self.pool)
         .await?;
@@ -47,9 +47,9 @@ impl TicketsDao {
 
     /// 根据 ID 获取工单
     #[instrument(skip(self))]
-    pub async fn get_ticket_by_id(&self, id: i64) -> anyhow::Result<Option<Ticket>> {
+    pub async fn get_ticket_by_id(&self, id: i64) -> anyhow::Result<Option<TicketModel>> {
         let ticket = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             SELECT
                 id, title, description, extra_data, attachments,
@@ -70,9 +70,9 @@ impl TicketsDao {
 
     /// 获取所有工单列表
     #[instrument(skip(self))]
-    pub async fn get_all_tickets(&self) -> anyhow::Result<Vec<Ticket>> {
+    pub async fn get_all_tickets(&self) -> anyhow::Result<Vec<TicketModel>> {
         let tickets = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             SELECT
                 id, title, description, extra_data, attachments,
@@ -92,9 +92,9 @@ impl TicketsDao {
 
     /// 根据申请人 ID 获取工单列表
     #[instrument(skip(self))]
-    pub async fn get_tickets_by_apply_user(&self, user_id: i64) -> anyhow::Result<Vec<Ticket>> {
+    pub async fn get_tickets_by_apply_user(&self, user_id: i64) -> anyhow::Result<Vec<TicketModel>> {
         let tickets = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             SELECT
                 id, title, description, extra_data, attachments,
@@ -116,9 +116,9 @@ impl TicketsDao {
 
     /// 根据审批人 ID 获取工单列表
     #[instrument(skip(self))]
-    pub async fn get_tickets_by_approve_user(&self, user_id: i64) -> anyhow::Result<Vec<Ticket>> {
+    pub async fn get_tickets_by_approve_user(&self, user_id: i64) -> anyhow::Result<Vec<TicketModel>> {
         let tickets = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             SELECT
                 id, title, description, extra_data, attachments,
@@ -140,9 +140,9 @@ impl TicketsDao {
 
     /// 根据状态获取工单列表
     #[instrument(skip(self))]
-    pub async fn get_tickets_by_status(&self, status: TicketStatus) -> anyhow::Result<Vec<Ticket>> {
+    pub async fn get_tickets_by_status(&self, status: TicketStatus) -> anyhow::Result<Vec<TicketModel>> {
         let tickets = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             SELECT
                 id, title, description, extra_data, attachments,
@@ -164,20 +164,20 @@ impl TicketsDao {
 
     /// 更新工单
     #[instrument(skip(self))]
-    pub async fn update_ticket(&self, ticket: Ticket) -> anyhow::Result<Option<Ticket>> {
+    pub async fn update_ticket(&self, param: UpdateTicketParam) -> anyhow::Result<Option<TicketModel>> {
         let updated = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             UPDATE it_service.itsd_tickets
             SET
-                title = $2,
-                description = $3,
-                extra_data = $4,
-                attachments = $5,
-                category = $6,
-                status = $7,
-                priority = $8,
-                approve_user_id = $9,
+                title = COALESCE($2, title),
+                description = COALESCE($3, description),
+                extra_data = COALESCE($4, extra_data),
+                attachments = COALESCE($5, attachments),
+                category = COALESCE($6, category),
+                status = COALESCE($7::text, status),
+                priority = COALESCE($8::text, priority),
+                approve_user_id = COALESCE($9, approve_user_id),
                 updated_at = NOW()
             WHERE id = $1
             RETURNING
@@ -187,15 +187,15 @@ impl TicketsDao {
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
             "#,
-            ticket.id,
-            ticket.title,
-            ticket.description,
-            ticket.extra_data,
-            ticket.attachments,
-            ticket.category,
-            ticket.status as TicketStatus,
-            ticket.priority as TicketPriority,
-            ticket.approve_user_id
+            param.id,
+            param.title,
+            param.description,
+            param.extra_data,
+            param.attachments,
+            param.category,
+            param.status.map(|s| s.to_string()),
+            param.priority.map(|p| p.to_string()),
+            param.approve_user_id
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -205,9 +205,9 @@ impl TicketsDao {
 
     /// 更新工单状态
     #[instrument(skip(self))]
-    pub async fn update_ticket_status(&self, id: i64, status: TicketStatus) -> anyhow::Result<Option<Ticket>> {
+    pub async fn update_ticket_status(&self, id: i64, status: TicketStatus) -> anyhow::Result<Option<TicketModel>> {
         let updated = sqlx::query_as!(
-            Ticket,
+            TicketModel,
             r#"
             UPDATE it_service.itsd_tickets
             SET

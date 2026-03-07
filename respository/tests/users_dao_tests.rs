@@ -1,20 +1,22 @@
 //! 用户 DAO 单元测试
-//
 //! 这个文件包含 UsersDao 的单元测试
 
 #[cfg(test)]
 mod tests {
     use anyhow::Result;
+    use dotenvy::dotenv;
     use respository::dao::UsersDao;
-    use respository::models::users::{CreateUserRequest, UserRole};
+    use respository::models::users::{CreateUserParam, UserRole};
+    use std::env;
 
     /// 创建测试用的数据库连接池
     async fn setup_test_pool() -> Result<sqlx::PgPool> {
-        // 在测试环境中使用测试数据库
-        let database_url = std::env::var("TEST_DATABASE_URL").unwrap_or_else(|_| {
-            "postgresql://postgres:postgres@localhost:5432/it_service_test".to_string()
-        });
-
+        if let Err(e) = dotenv() {
+            eprintln!("Failed to load .env file: {}", e);
+            panic!("Failed to load .env file");
+        }
+        // 读取环境变量
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool = sqlx::PgPool::connect(&database_url).await?;
         Ok(pool)
     }
@@ -25,16 +27,14 @@ mod tests {
         let pool = setup_test_pool().await?;
         let users_dao = UsersDao::new(pool);
 
-        let create_request = CreateUserRequest {
+        let create_request = CreateUserParam {
             username: "test_user_001".to_string(),
             password: "hashed_password_123".to_string(),
             email: "test001@example.com".to_string(),
             role: UserRole::User,
         };
 
-        let user = users_dao
-            .create_user(create_request, "hashed_password_123")
-            .await?;
+        let user = users_dao.create_user(create_request).await?;
 
         assert_eq!(user.username, "test_user_001");
         assert_eq!(user.email, "test001@example.com");
@@ -51,16 +51,14 @@ mod tests {
         let users_dao = UsersDao::new(pool);
 
         // 先创建一个用户
-        let create_request = CreateUserRequest {
+        let create_request = CreateUserParam {
             username: "test_user_002".to_string(),
             password: "hashed_password_123".to_string(),
             email: "test002@example.com".to_string(),
             role: UserRole::User,
         };
 
-        let _created_user = users_dao
-            .create_user(create_request, "hashed_password_123")
-            .await?;
+        let _created_user = users_dao.create_user(create_request).await?;
 
         // 查询用户
         let user = users_dao.get_user_by_username("test_user_002").await?;
@@ -80,16 +78,14 @@ mod tests {
         let users_dao = UsersDao::new(pool);
 
         // 先创建一个用户
-        let create_request = CreateUserRequest {
+        let create_request = CreateUserParam {
             username: "test_user_003".to_string(),
             password: "hashed_password_123".to_string(),
             email: "test003@example.com".to_string(),
             role: UserRole::User,
         };
 
-        let created_user = users_dao
-            .create_user(create_request, "hashed_password_123")
-            .await?;
+        let created_user = users_dao.create_user(create_request).await?;
 
         // 根据ID查询用户
         let user = users_dao.get_user_by_id(created_user.id).await?;
@@ -102,42 +98,6 @@ mod tests {
         Ok(())
     }
 
-    /// 测试更新用户功能
-    // #[tokio::test]
-    // async fn test_update_user() -> Result<()> {
-    //     let pool = setup_test_pool().await?;
-    //     let users_dao = UsersDao::new(pool);
-    //
-    //     // 先创建一个用户
-    //     let create_request = CreateUserRequest {
-    //         username: "test_user_004".to_string(),
-    //         password: "hashed_password_123".to_string(),
-    //         email: "test004@example.com".to_string(),
-    //         role: UserRole::User,
-    //     };
-    //
-    //     let created_user = users_dao.create_user(create_request, "hashed_password_123").await?;
-    //
-    //     // 更新用户信息
-    //     let update_request = UpdateUserRequest {
-    //         username: Some("updated_user_004".to_string()),
-    //         password: Some("new_hashed_password".to_string()),
-    //         email: Some("updated004@example.com".to_string()),
-    //         role: Some(UserRole::Approver),
-    //         is_active: Some(true),
-    //     };
-    //
-    //     let updated_user = users_dao.update_user(created_user.id, update_request).await?;
-    //
-    //     assert!(updated_user.is_some());
-    //     let updated_user = updated_user.unwrap();
-    //     assert_eq!(updated_user.username, "updated_user_004");
-    //     assert_eq!(updated_user.email, "updated004@example.com");
-    //     assert_eq!(updated_user.role, UserRole::Approver);
-    //
-    //     Ok(())
-    // }
-
     /// 测试删除用户功能（软删除）
     #[tokio::test]
     async fn test_delete_user() -> Result<()> {
@@ -145,16 +105,14 @@ mod tests {
         let users_dao = UsersDao::new(pool);
 
         // 先创建一个用户
-        let create_request = CreateUserRequest {
+        let create_request = CreateUserParam {
             username: "test_user_005".to_string(),
             password: "hashed_password_123".to_string(),
             email: "test005@example.com".to_string(),
             role: UserRole::User,
         };
 
-        let created_user = users_dao
-            .create_user(create_request, "hashed_password_123")
-            .await?;
+        let created_user = users_dao.create_user(create_request).await?;
 
         // 删除用户
         let delete_result = users_dao.delete_user(created_user.id).await?;
@@ -180,15 +138,13 @@ mod tests {
         let usernames = vec!["bulk_user_001", "bulk_user_002", "bulk_user_003"];
 
         for username in &usernames {
-            let create_request = CreateUserRequest {
+            let create_request = CreateUserParam {
                 username: username.to_string(),
                 password: "hashed_password_123".to_string(),
                 email: format!("{}@example.com", username),
                 role: UserRole::User,
             };
-            users_dao
-                .create_user(create_request, "hashed_password_123")
-                .await?;
+            users_dao.create_user(create_request).await?;
         }
 
         // 获取所有用户

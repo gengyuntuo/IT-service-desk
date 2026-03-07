@@ -18,5 +18,5 @@ sqlx = { workspace = true, features = ["postgres"] }
 tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-utoipa = { version = "5.4.0", features = ["axum_extras"] }
+utoipa = { version = "5.4.0", features = ["axum_extras", "chrono"] }
 utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
