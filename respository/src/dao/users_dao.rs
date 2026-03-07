@@ -1,4 +1,3 @@
-use std::ptr::null;
 use crate::models::users::{CreateUserRequest, UpdateUserRequest, User, UserRole};
 use anyhow::Result;
 use sqlx::PgPool;
@@ -15,17 +14,17 @@ impl UsersDao {
     }
 
     /// 创建新用户
-    #[instrument(skip(self, password))]
-    pub async fn create_user(&self, request: CreateUserRequest, password: &str) -> Result<User> {
+    #[instrument(skip(self))]
+    pub async fn create_user(&self, request: CreateUserRequest) -> Result<User> {
         let user = sqlx::query_as!(
             User,
             r#"
-            INSERT INTO it_service.itsd_users (username, password_hash, email, role)
+            INSERT INTO it_service.itsd_users (username, password_hashed, email, role)
             VALUES ($1, $2, $3, $4)
-            RETURNING id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            RETURNING id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             "#,
             request.username,
-            password, // 这里应该是已经哈希过的密码
+            request.password, // 这里应该是已经哈希过的密码
             request.email,
             request.role as UserRole
         )
@@ -41,11 +40,11 @@ impl UsersDao {
         let user = sqlx::query_as!(
             User,
             r#"
-            SELECT id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            SELECT id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             FROM it_service.itsd_users
             WHERE id = $1 AND is_active = true
             "#,
-            id
+            id as i64
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -59,11 +58,11 @@ impl UsersDao {
         let user = sqlx::query_as!(
             User,
             r#"
-            SELECT id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            SELECT id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             FROM it_service.itsd_users
             WHERE username = $1 AND is_active = true
             "#,
-            username
+            username.to_string()
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -77,11 +76,11 @@ impl UsersDao {
         let user = sqlx::query_as!(
             User,
             r#"
-            SELECT id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            SELECT id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             FROM it_service.itsd_users
             WHERE email = $1 AND is_active = true
             "#,
-            email
+            email.to_string()
         )
         .fetch_optional(&self.pool)
         .await?;
@@ -95,7 +94,7 @@ impl UsersDao {
         let users = sqlx::query_as!(
             User,
             r#"
-            SELECT id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            SELECT id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             FROM it_service.itsd_users
             WHERE is_active = true
             ORDER BY id
@@ -125,16 +124,20 @@ impl UsersDao {
     }
 
     /// 验证用户凭据
-    #[instrument(skip(self, password))]
-    pub async fn verify_credentials(&self, username: &str, password: &str) -> Result<Option<User>> {
+    #[instrument(skip(self, password_hashed))]
+    pub async fn verify_credentials(
+        &self,
+        username: &str,
+        password_hashed: &str,
+    ) -> Result<Option<User>> {
         let user = sqlx::query_as!(
             User,
             r#"
-            SELECT id, username, password_hash, email, role AS "role: UserRole", is_active, created_at, updated_at
+            SELECT id, username, password_hashed, email, role AS "role: UserRole", is_active, created_at, updated_at
             FROM it_service.itsd_users
             WHERE username = $1 AND is_active = true
             "#,
-            username
+            username.to_string()
         )
         .fetch_optional(&self.pool)
         .await?;

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id, title, description, attachments, category,\n                status AS \"status: TicketStatus\",\n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            FROM it_service.itsd_tickets\n            WHERE id = $1\n            ",
+  "query": "\n            SELECT\n                id, title, description, extra_data, attachments,\n                category,\n                status AS \"status: TicketStatus\",\n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            FROM it_service.itsd_tickets\n            WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -20,46 +20,51 @@
       },
       {
         "ordinal": 3,
-        "name": "attachments",
+        "name": "extra_data",
         "type_info": "Text"
       },
       {
         "ordinal": 4,
-        "name": "category",
+        "name": "attachments",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "status: TicketStatus",
+        "name": "category",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "priority: TicketPriority",
+        "name": "status: TicketStatus",
         "type_info": "Text"
       },
       {
         "ordinal": 7,
+        "name": "priority: TicketPriority",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "apply_user_id",
         "type_info": "Int8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "approve_user_id",
         "type_info": "Int8"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "finished_at",
         "type_info": "Timestamptz"
       }
@@ -74,6 +79,7 @@
       false,
       true,
       true,
+      true,
       false,
       false,
       false,
@@ -84,5 +90,5 @@
       true
     ]
   },
-  "hash": "2dd0947cd658eccc7fe63b12dd985f6d3072d69bf9b48e8157e55a763190a93f"
+  "hash": "faf311457bf44430003c24b369c2a5ee2adda2f00bbbefe7439e5e290c1eccc4"
 }

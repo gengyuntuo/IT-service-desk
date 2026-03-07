@@ -67,7 +67,10 @@ pub struct Ticket {
     /// 详细描述
     pub description: Option<String>,
 
-    /// 附件地址或 JSON 字符串
+    /// 额外的数据，如 JSON 字符串
+    pub extra_data: Option<String>,
+
+    /// 附件
     pub attachments: Option<String>,
 
     /// 类别：如 "Hardware", "Software", "Network"

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO it_service.itsd_users (username, password_hash, email, role)\n            VALUES ($1, $2, $3, $4)\n            RETURNING id, username, password_hash, email, role AS \"role: UserRole\", is_active, created_at, updated_at\n            ",
+  "query": "\n            INSERT INTO it_service.itsd_users (username, password_hashed, email, role)\n            VALUES ($1, $2, $3, $4)\n            RETURNING id, username, password_hashed, email, role AS \"role: UserRole\", is_active, created_at, updated_at\n            ",
   "describe": {
     "columns": [
       {
@@ -15,7 +15,7 @@
       },
       {
         "ordinal": 2,
-        "name": "password_hash",
+        "name": "password_hashed",
         "type_info": "Text"
       },
       {
@@ -63,5 +63,5 @@
       true
     ]
   },
-  "hash": "567a7e1549d542ce5035100f10c8c65db90cee12ea857ecdff99f78c66c55766"
+  "hash": "6607d745c55d8abdc2d66bb026c8059b1b65e2b847537a207736fd45594aa9ef"
 }

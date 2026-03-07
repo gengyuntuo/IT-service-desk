@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, username, password_hash, email, role AS \"role: UserRole\", is_active, created_at, updated_at\n            FROM it_service.itsd_users\n            WHERE id = $1 AND is_active = true\n            ",
+  "query": "\n            SELECT id, username, password_hashed, email, role AS \"role: UserRole\", is_active, created_at, updated_at\n            FROM it_service.itsd_users\n            WHERE username = $1 AND is_active = true\n            ",
   "describe": {
     "columns": [
       {
@@ -15,7 +15,7 @@
       },
       {
         "ordinal": 2,
-        "name": "password_hash",
+        "name": "password_hashed",
         "type_info": "Text"
       },
       {
@@ -46,7 +46,7 @@
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Text"
       ]
     },
     "nullable": [
@@ -60,5 +60,5 @@
       true
     ]
   },
-  "hash": "52e3bb85583287e802dedbb3f4607d01c188fbf722e622bf742b5a2671b44196"
+  "hash": "0ba977593a872ae0cec1a40b88886d7f747a81d28fc6429fe9fd5320d5cf89a9"
 }

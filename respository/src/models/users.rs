@@ -34,7 +34,7 @@ pub struct User {
     pub username: String,
 
     /// 密码哈希值
-    pub password_hash: String,
+    pub password_hashed: String,
 
     /// 邮箱地址
     pub email: String,

@@ -16,20 +16,22 @@ impl TicketsDao {
     /// 创建新工单
     #[instrument(skip(self))]
     pub async fn create_ticket(&self, ticket: Ticket) -> anyhow::Result<Ticket> {
-        let created = sqlx::query_as!(
+        let created_ticket = sqlx::query_as!(
             Ticket,
             r#"
             INSERT INTO it_service.itsd_tickets 
-                (title, description, attachments, category, status, priority, apply_user_id, approve_user_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                (title, description, extra_data, attachments, category, status, priority, apply_user_id, approve_user_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING
-                id, title, description, attachments, category, 
+                id, title, description, extra_data, attachments,
+                category, 
                 status AS "status: TicketStatus", 
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
             "#,
             ticket.title,
             ticket.description,
+            ticket.extra_data,
             ticket.attachments,
             ticket.category,
             ticket.status as TicketStatus,
@@ -40,7 +42,7 @@ impl TicketsDao {
         .fetch_one(&self.pool)
         .await?;
 
-        Ok(created)
+        Ok(created_ticket)
     }
 
     /// 根据 ID 获取工单
@@ -50,7 +52,8 @@ impl TicketsDao {
             Ticket,
             r#"
             SELECT
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -72,7 +75,8 @@ impl TicketsDao {
             Ticket,
             r#"
             SELECT
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -93,7 +97,8 @@ impl TicketsDao {
             Ticket,
             r#"
             SELECT
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -116,7 +121,8 @@ impl TicketsDao {
             Ticket,
             r#"
             SELECT
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -139,7 +145,8 @@ impl TicketsDao {
             Ticket,
             r#"
             SELECT
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -165,15 +172,17 @@ impl TicketsDao {
             SET
                 title = $2,
                 description = $3,
-                attachments = $4,
-                category = $5,
-                status = $6,
-                priority = $7,
-                approve_user_id = $8,
+                extra_data = $4,
+                attachments = $5,
+                category = $6,
+                status = $7,
+                priority = $8,
+                approve_user_id = $9,
                 updated_at = NOW()
             WHERE id = $1
             RETURNING
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -181,6 +190,7 @@ impl TicketsDao {
             ticket.id,
             ticket.title,
             ticket.description,
+            ticket.extra_data,
             ticket.attachments,
             ticket.category,
             ticket.status as TicketStatus,
@@ -209,7 +219,8 @@ impl TicketsDao {
                 END
             WHERE id = $1
             RETURNING
-                id, title, description, attachments, category,
+                id, title, description, extra_data, attachments,
+                category,
                 status AS "status: TicketStatus",
                 priority AS "priority: TicketPriority",
                 apply_user_id, approve_user_id, created_at, updated_at, finished_at
@@ -231,7 +242,7 @@ impl TicketsDao {
             DELETE FROM it_service.itsd_tickets
             WHERE id = $1
             "#,
-            id
+            id as i32
         )
         .execute(&self.pool)
         .await?;

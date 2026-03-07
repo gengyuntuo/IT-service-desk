@@ -4,14 +4,14 @@ CREATE SCHEMA IF NOT EXISTS it_service;
 DROP TABLE IF EXISTS it_service.itsd_users;
 CREATE TABLE IF NOT EXISTS it_service.itsd_users
 (
-    id            Serial4 PRIMARY KEY,
-    username      TEXT UNIQUE NOT NULL,
-    password_hash TEXT        NOT NULL,
-    email         TEXT UNIQUE NOT NULL,
-    role          TEXT        NOT NULL,
-    is_active     BOOLEAN     NOT NULL     DEFAULT TRUE,
-    created_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    updated_at    TIMESTAMP WITH TIME ZONE
+    id              Serial4 PRIMARY KEY,
+    username        TEXT UNIQUE NOT NULL,
+    password_hashed TEXT        NOT NULL,
+    email           TEXT UNIQUE NOT NULL,
+    role            TEXT        NOT NULL,
+    is_active       BOOLEAN     NOT NULL     DEFAULT TRUE,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at      TIMESTAMP WITH TIME ZONE
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS itsd_users_username_uindex ON it_service.itsd_users (username);
@@ -21,6 +21,7 @@ COMMENT ON COLUMN it_service.itsd_users.id IS 'User ID';
 
 
 -- 工单表
+-- DROP TABLE IF EXISTS it_service.itsd_tickets;
 CREATE TABLE IF NOT EXISTS it_service.itsd_tickets
 (
     id              SERIAL8 PRIMARY KEY,

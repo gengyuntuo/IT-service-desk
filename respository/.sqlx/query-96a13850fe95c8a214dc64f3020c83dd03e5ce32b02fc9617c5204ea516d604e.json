@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            UPDATE it_service.itsd_tickets\n            SET\n                status = $2,\n                updated_at = NOW(),\n                finished_at = CASE\n                    WHEN $2 IN ('resolved', 'rejected', 'closed') THEN NOW()\n                    ELSE NULL\n                END\n            WHERE id = $1\n            RETURNING\n                id, title, description, attachments, category,\n                status AS \"status: TicketStatus\",\n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            ",
+  "query": "\n            INSERT INTO it_service.itsd_tickets \n                (title, description, extra_data, attachments, category, status, priority, apply_user_id, approve_user_id)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n            RETURNING\n                id, title, description, extra_data, attachments,\n                category, \n                status AS \"status: TicketStatus\", \n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            ",
   "describe": {
     "columns": [
       {
@@ -20,59 +20,72 @@
       },
       {
         "ordinal": 3,
-        "name": "attachments",
+        "name": "extra_data",
         "type_info": "Text"
       },
       {
         "ordinal": 4,
-        "name": "category",
+        "name": "attachments",
         "type_info": "Text"
       },
       {
         "ordinal": 5,
-        "name": "status: TicketStatus",
+        "name": "category",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "priority: TicketPriority",
+        "name": "status: TicketStatus",
         "type_info": "Text"
       },
       {
         "ordinal": 7,
+        "name": "priority: TicketPriority",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "apply_user_id",
         "type_info": "Int8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "approve_user_id",
         "type_info": "Int8"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "finished_at",
         "type_info": "Timestamptz"
       }
     ],
     "parameters": {
       "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
         "Int8",
-        "Text"
+        "Int8"
       ]
     },
     "nullable": [
       false,
       false,
+      true,
       true,
       true,
       false,
@@ -85,5 +98,5 @@
       true
     ]
   },
-  "hash": "3b8235ac666aa28d4cd50a9a602406ecd8d526cf86ae520af9c14d3c6f8fbd3b"
+  "hash": "96a13850fe95c8a214dc64f3020c83dd03e5ce32b02fc9617c5204ea516d604e"
 }
