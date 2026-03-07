@@ -1,0 +1,95 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE it_service.itsd_tickets\n            SET\n                title = $2,\n                description = $3,\n                attachments = $4,\n                category = $5,\n                status = $6,\n                priority = $7,\n                approve_user_id = $8,\n                updated_at = NOW()\n            WHERE id = $1\n            RETURNING\n                id, title, description, attachments, category,\n                status AS \"status: TicketStatus\",\n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "attachments",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "category",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "status: TicketStatus",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "priority: TicketPriority",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "apply_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "approve_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 9,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "finished_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "24ad8015778747de2de103ab104a364fe4d4b3669c977ff7ad0f9212310fd74f"
+}

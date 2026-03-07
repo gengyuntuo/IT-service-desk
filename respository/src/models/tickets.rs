@@ -12,6 +12,8 @@ pub enum TicketStatus {
     InProgress,
     #[serde(rename = "resolved")]
     Resolved,
+    #[serde(rename = "rejected")]
+    Rejected,
     #[serde(rename = "closed")]
     Closed,
 }
@@ -22,6 +24,7 @@ impl std::fmt::Display for TicketStatus {
             TicketStatus::Open => write!(f, "open"),
             TicketStatus::InProgress => write!(f, "in_progress"),
             TicketStatus::Resolved => write!(f, "resolved"),
+            TicketStatus::Rejected => write!(f, "rejected"),
             TicketStatus::Closed => write!(f, "closed"),
         }
     }

@@ -1,0 +1,88 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                id, title, description, attachments, category,\n                status AS \"status: TicketStatus\",\n                priority AS \"priority: TicketPriority\",\n                apply_user_id, approve_user_id, created_at, updated_at, finished_at\n            FROM it_service.itsd_tickets\n            WHERE apply_user_id = $1\n            ORDER BY id DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "attachments",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "category",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "status: TicketStatus",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "priority: TicketPriority",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "apply_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "approve_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 9,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 11,
+        "name": "finished_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "a62e9c203fcedaa4ab278d62ccd404f646ef7751aa6b8cef9b95f9f4b1cdd88b"
+}

@@ -1,17 +1,8 @@
+use std::ptr::null;
 use crate::models::users::{CreateUserRequest, UpdateUserRequest, User, UserRole};
 use anyhow::Result;
 use sqlx::PgPool;
 use tracing::instrument;
-
-// 创建组合 trait 来解决 trait object 限制
-trait SqlxParameter: sqlx::Encode<'static, sqlx::Postgres> + sqlx::Type<sqlx::Postgres> {}
-
-// 为常用类型实现这个 trait
-impl SqlxParameter for String {}
-impl SqlxParameter for bool {}
-impl SqlxParameter for UserRole {}
-impl SqlxParameter for i32 {}
-
 /// 用户数据访问对象
 pub struct UsersDao {
     pool: PgPool,
@@ -115,72 +106,6 @@ impl UsersDao {
 
         Ok(users)
     }
-    //
-    // /// 更新用户信息
-    // #[instrument(skip(self))]
-    // pub async fn update_user(&self, id: i32, request: UpdateUserRequest) -> Result<Option<User>> {
-    //     // 先检查用户是否存在且活跃
-    //     let existing_user = self.get_user_by_id(id).await?;
-    //     if existing_user.is_none() {
-    //         return Ok(None);
-    //     }
-    //
-    //     // 构建动态更新查询
-    //     let mut query_parts = vec![];
-    //     let mut params: Vec<Box<dyn SqlxParameter + Send>> = vec![];
-    //
-    //     if let Some(username) = &request.username {
-    //         query_parts.push(format!("username = ${}", query_parts.len() + 1));
-    //         params.push(Box::new(username.clone()));
-    //     }
-    //
-    //     if let Some(password_hash) = &request.password {
-    //         query_parts.push(format!("password_hash = ${}", query_parts.len() + 1));
-    //         params.push(Box::new(password_hash.clone()));
-    //     }
-    //
-    //     if let Some(email) = &request.email {
-    //         query_parts.push(format!("email = ${}", query_parts.len() + 1));
-    //         params.push(Box::new(email.clone()));
-    //     }
-    //
-    //     if let Some(role) = &request.role {
-    //         query_parts.push(format!("role = ${}", query_parts.len() + 1));
-    //         params.push(Box::new(role.clone() as UserRole));
-    //     }
-    //
-    //     if let Some(is_active) = request.is_active {
-    //         query_parts.push(format!("is_active = ${}", query_parts.len() + 1));
-    //         params.push(Box::new(is_active));
-    //     }
-    //
-    //     // 添加更新时间
-    //     query_parts.push(format!("updated_at = NOW()"));
-    //
-    //     if query_parts.is_empty() {
-    //         // 如果没有需要更新的字段，直接返回原用户
-    //         return Ok(existing_user);
-    //     }
-    //
-    //     // 构造完整的查询
-    //     let mut query = format!(
-    //         "UPDATE it_service.itsd_users SET {} WHERE id = ${} AND is_active = true RETURNING id, username, password_hash, email, role AS \"role: UserRole\", is_active, created_at, updated_at",
-    //         query_parts.join(", "),
-    //         query_parts.len() + 1
-    //     );
-    //
-    //     // 添加 ID 参数
-    //     params.push(Box::new(id));
-    //
-    //     // 执行查询
-    //     let mut query_builder = sqlx::query_as::<_, User>(&query);
-    //     for param in params {
-    //         query_builder = query_builder.bind(param);
-    //     }
-    //
-    //     let user = query_builder.fetch_optional(&self.pool).await?;
-    //     Ok(user)
-    // }
 
     /// 删除用户（软删除）
     #[instrument(skip(self))]
